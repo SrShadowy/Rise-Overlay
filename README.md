@@ -12,7 +12,7 @@ The program work offline and create config.txt to save position overlay
 ## How use
 
 First you need open the emulator, and the game, after loader game, you can open the programa overlay and switch you on position on display so click enable overlay! Done it is all
-<img src="https://github.com/SrShadowy/HM-RISE-Overlay/blob/main/PstYdBcvmS.gif" alt="Programmer">
+<img src="https://github.com/SrShadowy/Rise-Overlay/blob/main/PstYdBcvmS.gif" alt="Programmer">
 
 ```mermaid
 graph LR
