@@ -70,17 +70,14 @@ namespace overlay_testing
         Process emu;
         RECT window_rect;
 
-
-
-
-
-
         public int winW { get; set; }
         public int winH { get; set; }
 
-
         public string allocd { get; set; }
         //public int winW = 1, winH= 1;
+
+        public bool rise  { get; set; }
+        public bool gu  { get; set; }
 
         Mem memory = new Mem();
         long scan(string aob, bool read, bool write, bool executavel)
@@ -127,9 +124,28 @@ namespace overlay_testing
             memory.Suspend(emu.Id);
 
             Console.WriteLine("[ANALISE] Process suspend...");
-
-
-            byte[] wm =    {0x48, 0xC1, 0xE9, 0x01,                     //- shr rcx,01
+            var address = VirtualAllocEx(emu.Handle, (IntPtr)0x0, (IntPtr)0x200, AllocationType.Commit | AllocationType.Reserve, MemoryProtection.ExecuteReadWrite);
+            byte[] wm = { 0x0, 0x0 };
+            int nops = 0;
+            if (gu)
+            {
+                wm = new byte[] {
+                            0x48, 0xC1, 0xE9, 0x01,                     //- shr rcx,01
+                            0x25, 0xFF, 0x0F, 0x00, 0x00,        	    //- and eax,00000FFF
+                            0x52,                    			        //- push rdx
+                            0x48, 0x8D, 0x14, 0x08,           		    //- lea rdx,[rax+rcx]
+                            0x48, 0x89, 0x15, 0xEB, 0x00, 0x00, 0x00,   //- mov [mylocal+100],rdx
+                            0x5A,                    			        //- pop rdx
+                            0x89, 0xC0,                                 //- mov eax,eax
+                            0x8B, 0x04, 0x01,                           //- mov eax,[rcx+rax]
+                            0xFF, 0x25, 0x00,00,00,00,
+                            0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,00,00         //- jmp 2305F289EEB 
+                            };
+                nops = 1;
+            }
+            else if (rise)
+            {
+                wm = new byte[]  {0x48, 0xC1, 0xE9, 0x01,                     //- shr rcx,01
                             0x48, 0x25, 0xFF, 0x0F, 0x00, 0x00,        	//- and rax,00000FFF
                             0x52,                    			        //- push rdx
                             0x48, 0x8D, 0x14, 0x08,           		    //- lea rdx,[rax+rcx]
@@ -139,19 +155,21 @@ namespace overlay_testing
                             0xFF, 0x25, 0x00,00,00,00,
                             0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,00,00         //- jmp 2305F289EEB 
                             };
-            
-            var address = VirtualAllocEx(emu.Handle, (IntPtr)0x0, (IntPtr)0x200, AllocationType.Commit | AllocationType.Reserve, MemoryProtection.ExecuteReadWrite);
+            }
+
+           
+
 
             Console.WriteLine("space allocated to the hook {0} ", address.ToString("X"));
 
             for (int i = wm.Length - 8; i < wm.Length; i++)
             {
-                    wm[i] = BitConverter.GetBytes((msc+14))[i - (wm.Length - 8)];
+                wm[i] = BitConverter.GetBytes((msc + 14))[i - (wm.Length - 8)];
             }
             Console.WriteLine("[Shell] creating bytes for the hook...");
             byte[] jmp = {0xFF, 0x25, 0x00,00,00,00,
                           0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,00,00}; //BitConverter.GetBytes(address.ToInt64())
-           
+
             for (int i = jmp.Length - 8; i < jmp.Length; i++)
             {
                 jmp[i] = BitConverter.GetBytes(address.ToInt64())[i - (jmp.Length - 8)];
@@ -165,6 +183,11 @@ namespace overlay_testing
             memory.WriteBytes((msc).ToString("X"), jmp);
             Console.WriteLine("[Write] writing the function bytes");
 
+            for (int i = 0; i < nops; i++)
+            {
+                memory.WriteMemory((msc+jmp.Length +  i).ToString("X"), "byte" , "0x90");
+            }
+
             memory.Resume(emu.Id);
             Console.WriteLine("....DONE!....");
         }
@@ -173,10 +196,21 @@ namespace overlay_testing
         {
             Console.WriteLine("SCANNNNNNNNN STARTING WAIT......");
 
+ 
+            if (gu)
+            {
 
-            msc = scan("0F 8E F2 7D 00 00 48 C1 E9 01 48 81 E0 FF 0F 00 00 8B 04 01 C4 E3 39", true, false, true);
-            msc += 6;
-            Console.WriteLine("Found: " + msc.ToString("X"));
+                msc = scan("48 C1 E9 01 81 E0 FF 0F 00 00 89 C0 8B 04 01 C4 E3 49 22 C0 00 C5 FA 7F C6 8D 85 74", false, false, true);
+                Console.WriteLine("Found: " + msc.ToString("X"));
+            }
+            else if(rise)
+            {
+                msc = scan("0F 8E F2 7D 00 00 48 C1 E9 01 48 81 E0 FF 0F 00 00 8B 04 01 C4 E3 39", false, false, true);
+                msc += 6;
+                Console.WriteLine("Found: " + msc.ToString("X"));
+
+            }
+
 
             if (msc != 0 && msc > 0x1000)
                 monsterHP();
@@ -184,17 +218,20 @@ namespace overlay_testing
 
         private void fm_overlay_Load(object sender, EventArgs e)
         {
-            bar = Color.DarkOrange;
+
+            //bar = Color.DarkOrange;
             //lbl_hp.BackColor = Color.DarkOrange;
         }
 
         private void fm_overlay_Shown(object sender, EventArgs e)
         {
             this.Text = "Opeeneeddd";
-            this.BackColor = Color.Green;
-            this.TransparencyKey = Color.Green;
             this.TopMost = true;
+            this.TopLevel = true;
             this.FormBorderStyle = FormBorderStyle.None;
+            this.BackColor = Color.FromArgb(255, 0, 0, 0);
+            panel3.BackColor = this.BackColor;
+            this.TransparencyKey = this.BackColor;
             //Console.WriteLine("Overlay opend!");
             timer1.Stop();
             tmr_process.Start();
@@ -203,7 +240,7 @@ namespace overlay_testing
         {
             if (emu.MainWindowHandle != null)
             {
-                panel2.BackColor = bar;
+                //panel2.BackColor = bar;
                 //lbl_hp.BackColor = bar;
 
                 GetWindowRect(emu.MainWindowHandle, out window_rect);           
@@ -224,8 +261,20 @@ namespace overlay_testing
                     var max_life = memory.ReadLong(address_reads.ToString("X"));
                     if(max_life > 0)
                     {
-                        current_hp = memory.ReadFloat(max_life.ToString("X"));
-                        max_hp = memory.ReadFloat((max_life+4).ToString("X"));
+
+                        if (gu)
+                        {
+                            current_hp  = memory.ReadInt(max_life.ToString("X"));
+                            max_hp      = memory.ReadInt((max_life + 4).ToString("X"));
+                        }
+                        else if (rise)
+                        {
+                            current_hp  = memory.ReadFloat(max_life.ToString("X"));
+                            max_hp      = memory.ReadFloat((max_life + 4).ToString("X"));
+                        }
+
+                        //current_hp = memory.ReadFloat(max_life.ToString("X"));
+                        //max_hp = memory.ReadFloat((max_life+4).ToString("X"));
                         var poct =  current_hp/ max_hp;
                         panel2.Width = (int)(120 * poct);
                         lbl_hp.Text = current_hp + "/" + max_hp;
@@ -237,7 +286,11 @@ namespace overlay_testing
                     scannermemory();
                 }
             }
-           
+
+            //this.TopLevel = true;
+            //this.TopMost = !this.TopMost;
+            //this.BringToFront();
+
         }
 
         public void restore()
@@ -246,8 +299,19 @@ namespace overlay_testing
             if (address_reads > 0 || msc > 0)
             {
                 memory.Suspend(emu.Id);
-                msc -= 6;
-                byte[] restore = { 0x0F, 0x8E, 0xF2, 0x7D, 0x00, 0x00, 0x48, 0xC1, 0xE9, 0x01, 0x48, 0x81, 0xE0, 0xFF, 0x0F, 0x00, 0x00, 0x8B, 0x04, 0x01, 0xC4, 0xE3, 0x39 };
+                byte[] restore = { 0x0,0x0};
+                if (rise)
+                {
+                    msc -= 6;
+                    restore =new byte[]{ 0x0F, 0x8E, 0xF2, 0x7D, 0x00, 0x00, 0x48, 0xC1, 0xE9, 0x01, 0x48, 0x81, 0xE0, 0xFF, 0x0F, 0x00, 0x00, 0x8B, 0x04, 0x01, 0xC4, 0xE3, 0x39 };
+                    
+                }else if (gu)
+                {
+                    //msc -= 6;
+                    restore = new byte[] { 0x48, 0xC1, 0xE9, 0x01, 0x81, 0xE0, 0xFF, 0x0F, 0x00, 0x00, 0x89, 0xC0, 0x8B, 0x04, 0x01, 0xC4, 0xE3, 0x49, 0x22, 0xC0, 0x00, 0xC5, 0xFA, 0x7F, 0xC6, 0x8D, 0x85, 0x74 };
+                    //memory.WriteBytes(msc.ToString("X"), restore);
+                }
+
                 memory.WriteBytes(msc.ToString("X"), restore);
                 address_reads -= 0x100;
                 VirtualFreeEx(emu.Handle, (IntPtr)address_reads, 0x200, AllocationType.Commit | AllocationType.Reserve);
@@ -278,7 +342,7 @@ namespace overlay_testing
                     Hide();
                 }
             }
-            else if (emu != null && emu.MainWindowTitle.Contains("MONSTER HUNTER RISE"))
+            else if (emu != null && emu.MainWindowTitle.Contains("MONSTER HUNTER RISE") || emu.MainWindowTitle.Contains("MONSTER HUNTER GENERATIONS ULTIMATE"))
             {
                 Console.WriteLine("Found! " + emu.MainWindowTitle);
                 if (memory.OpenProcess(emu.Id))
@@ -302,6 +366,30 @@ namespace overlay_testing
                 Console.WriteLine("Maybe the emulator is open, but I didn't find the game, please open the game and load it and try to open the overlay again");
                 this.Hide();
             }
+
+            //this.TopMost = true;
+            //this.BringToFront();
+        }
+
+        private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+
+        private void panel2_MouseEnter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel2_MouseDown(object sender, MouseEventArgs e)
+        {
+          
+        }
+
+        private void panel2_MouseMove(object sender, MouseEventArgs e)
+        {
+            
         }
 
         private void fm_overlay_KeyDown(object sender, KeyEventArgs e)

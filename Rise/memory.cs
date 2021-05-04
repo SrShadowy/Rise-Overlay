@@ -2120,9 +2120,9 @@ namespace overlay_testing
                                           ((memInfo.Protect & PAGE_EXECUTE_WRITECOPY) > 0);
 
                         bool isExecutable = ((memInfo.Protect & PAGE_EXECUTE) > 0) ||
-                                            ((memInfo.Protect & PAGE_EXECUTE_READ) > 0) ||
-                                            ((memInfo.Protect & PAGE_EXECUTE_READWRITE) > 0) ||
-                                            ((memInfo.Protect & PAGE_EXECUTE_WRITECOPY) > 0);
+                                            ((memInfo.Protect & PAGE_EXECUTE_READ) > 0);
+                                            //((memInfo.Protect & PAGE_EXECUTE_READWRITE) > 0) ||
+                                            //((memInfo.Protect & PAGE_EXECUTE_WRITECOPY) > 0);
 
                         isReadable &= readable;
                         isWritable &= writable;
