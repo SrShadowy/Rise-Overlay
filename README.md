@@ -20,6 +20,15 @@ First you need open the emulator, and the game, after loader game, you can open 
 
 For now it only works for Ryujinx (Ver 1.0) see more in the credits below! the game version is v2.0
 
+
+## UPDATE NEW FACE AND SUPROT!
+
+
+Now u can use too in MH GU too!
+and more make personalization.
+<img src="https://i.imgur.com/sUSvw6K.gif">
+
+
 ## CREDITS
 
 THANKS FOR EXISTING!
