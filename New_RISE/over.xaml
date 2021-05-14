@@ -1,0 +1,24 @@
+﻿<Window x:Name="overlay_window" x:Class="overlay_app.over"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:overlay_app"
+        mc:Ignorable="d"
+        WindowStyle="None" AllowsTransparency="True"
+        Topmost="True"
+
+        Title="over" Height="72.378" Width="259.47" Background="{x:Null}" MouseMove="Window_MouseMove" Cursor="Pen" IsTabStop="False" TabIndex="0" Foreground="{x:Null}" LostFocus="overlay_window_LostFocus">
+    <Grid>
+        <DockPanel Margin="0,0,10,10">
+            <Label DockPanel.Dock="Top" x:Name="lbl_hp" Content="100/100" Foreground="White" />
+            <Label DockPanel.Dock="Bottom" x:Name="lbl_porcent" Content="100%" Foreground="White" />
+            <Image x:Name="img" DockPanel.Dock="Right" Source="recourses/kamura.png" Margin="0,-26" />
+            <ProgressBar x:Name="pb_hp"  DockPanel.Dock="Left" Background="#CCE6E6E6" Value="50">
+                <ProgressBar.OpacityMask>
+                    <ImageBrush ImageSource="recourses/progressbar.png" />
+                </ProgressBar.OpacityMask>
+            </ProgressBar>
+        </DockPanel>
+    </Grid>
+</Window>

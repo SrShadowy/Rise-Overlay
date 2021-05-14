@@ -1,0 +1,49 @@
+﻿<Window x:Class="overlay_app.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:overlay_app"
+        mc:Ignorable="d"
+        Title="Overlay Testing" Height="496.068" Width="439.22" ResizeMode="NoResize" Foreground="{x:Null}"
+        Icon="recourses/ae92223a46152574ca928c6ad160316b.png" Closing="Window_Closing">
+    <Window.Background>
+        <ImageBrush ImageSource="recourses/Backgorund.png" />
+    </Window.Background>
+    <Grid x:Name="grid_pn1" HorizontalAlignment="Left" Margin="0,0,0,4" Width="177">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40*" />
+        </Grid.RowDefinitions>
+        <CheckBox x:Name="chk_overlay" Content="OVERLAY" HorizontalAlignment="Left" Margin="10,10,0,0" FontFamily="Segoe UI Black" FontSize="14" Foreground="White" Width="85" Unchecked="chk_overlay_Unchecked" Checked="chk_overlay_Checked" Height="25" VerticalAlignment="Top" />
+        <Slider x:Name="slider_opc_background" HorizontalAlignment="Left" Margin="10,0,0,177" VerticalAlignment="Bottom" Width="157" Maximum="255" ValueChanged="slider_opc_background_ValueChanged" Height="18" />
+        <Label Content="Opacy Background" HorizontalAlignment="Left" Margin="10,236,0,0" VerticalAlignment="Top" FontFamily="Roboto Th" FontSize="14" Foreground="White" Height="27" Width="129" />
+        <CheckBox x:Name="chk_bar" Content="PROGRESSBAR" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Segoe UI Black" FontSize="14" Foreground="White" Height="24" Width="123" Margin="16,51,0,0" IsChecked="True" />
+        <CheckBox x:Name="chk_num" Content="NUMERIC" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Segoe UI Black" FontSize="14" Foreground="White" Height="24" Width="87" Margin="16,80,0,0" IsChecked="True" />
+        <CheckBox x:Name="chk_porcent" Content="PORCENTAGE" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Segoe UI Black" FontSize="14" Foreground="White" Height="24" Width="115" Margin="16,109,0,0" IsChecked="True" />
+        <ComboBox x:Name="cb_font" HorizontalAlignment="Left" Margin="215,54,-195,0" VerticalAlignment="Top" Width="157" SelectionChanged="cb_font_SelectionChanged" SelectedIndex="0" />
+        <Label x:Name="font_setting" Content="Fonte Settings:" HorizontalAlignment="Left" Margin="215,25,-152,0" VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Black" FontSize="14" />
+        <TextBox x:Name="txtbox_number" HorizontalAlignment="Left" Height="23" Margin="332,81,-185,0" TextWrapping="Wrap" Text="12" VerticalAlignment="Top" Width="30"  PreviewTextInput="NumberValidationTextBox" TextChanged="txtbox_number_TextChanged" />
+        <TextBox x:Name="color" HorizontalAlignment="Left" Height="23" Margin="215,81,-125,0" TextWrapping="Wrap" Text="#FFFFFFFF" VerticalAlignment="Top" Width="87" TextChanged="color_TextChanged" />
+        <Label x:Name="bar_settings" Content="Bar Settings:" HorizontalAlignment="Left" Margin="215,140,-152,0" VerticalAlignment="Top" Foreground="White" FontFamily="Segoe UI Black" FontSize="14" />
+        <TextBox x:Name="bar_background" HorizontalAlignment="Left" Height="23" Margin="215,169,-105,0" TextWrapping="Wrap" Text="#A0FFFFFF" VerticalAlignment="Top" Width="67" TextChanged="bar_background_TextChanged" />
+        <TextBox x:Name="bar_foreground" HorizontalAlignment="Left" Height="23" Margin="305,169,-195,0" TextWrapping="Wrap" Text="#FF00FF00" VerticalAlignment="Top" Width="67" TextChanged="bar_foreground_TextChanged" />
+        <TextBox x:Name="bar_format" HorizontalAlignment="Left" Height="23" Margin="215,201,-195,0" TextWrapping="Wrap" Text="none" VerticalAlignment="Top" Width="157" TextChanged="color_TextChanged" />
+        <TextBox x:Name="posX" HorizontalAlignment="Left" Height="19" Margin="10,169,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="49" TextChanged="bar_background_TextChanged" />
+        <TextBox x:Name="posY" HorizontalAlignment="Left" Height="19" Margin="90,169,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="49" TextChanged="bar_background_TextChanged" />
+        <CheckBox x:Name="chk_mascote" Content="MASCOT" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Segoe UI Black" FontSize="14" Foreground="White" Height="24" Width="115" Margin="16,133,0,0" IsChecked="True" />
+        <ComboBox x:Name="scale" HorizontalAlignment="Left" Margin="215,281,-185,0" VerticalAlignment="Top" Width="147" SelectedIndex="0" SelectionChanged="scale_SelectionChanged">
+            <ListBoxItem Content="x1" />
+            <ListBoxItem Content="x2" />
+            <ListBoxItem Content="x3" />
+            <ListBoxItem Content="x4" />
+        </ComboBox>
+        <Label Content="Scale Overlay" HorizontalAlignment="Left" Margin="215,254,-167,0" VerticalAlignment="Top" FontFamily="Roboto Th" FontSize="14" Foreground="White" Height="27" Width="129" RenderTransformOrigin="0.578,-0.537" />
+
+        <TextBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" x:Name="logBlock" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="95" Width="390" Background="#FF151515" ScrollViewer.CanContentScroll="True" AutomationProperties.IsRowHeader="True" Foreground="White" Margin="16,358,-229,0">
+        </TextBox>
+
+        <CheckBox x:Name="chk_acceleration" Content="Acceleration with GPU mode" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Segoe UI Black" FontSize="14" Foreground="White" Height="24" Width="226" Margin="180,308,-229,0" IsChecked="True" Click="chk_acceleration_Click" />
+        <Label Content="LOG:" HorizontalAlignment="Left" Margin="16,331,0,0" VerticalAlignment="Top" FontFamily="Roboto Th" FontSize="14" Foreground="White" Height="27" Width="129" />
+        <Button x:Name="btn_save" Content="SAVE CONFIG" HorizontalAlignment="Left" Margin="19,306,0,0" VerticalAlignment="Top" Width="148" Click="btn_save_Click"/>
+    </Grid>
+</Window>
