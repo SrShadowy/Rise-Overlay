@@ -45,5 +45,6 @@
         <CheckBox x:Name="chk_acceleration" Content="Acceleration with GPU mode" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Segoe UI Black" FontSize="14" Foreground="White" Height="24" Width="226" Margin="180,308,-229,0" IsChecked="True" Click="chk_acceleration_Click" />
         <Label Content="LOG:" HorizontalAlignment="Left" Margin="16,331,0,0" VerticalAlignment="Top" FontFamily="Roboto Th" FontSize="14" Foreground="White" Height="27" Width="129" />
         <Button x:Name="btn_save" Content="SAVE CONFIG" HorizontalAlignment="Left" Margin="19,306,0,0" VerticalAlignment="Top" Width="148" Click="btn_save_Click"/>
+        <Button x:Name="btn_test" Content="clear_TESTE" HorizontalAlignment="Left" Margin="331,332,-229,0" VerticalAlignment="Top" Width="75" Click="btn_test_Click"/>
     </Grid>
 </Window>
